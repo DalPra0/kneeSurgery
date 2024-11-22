@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pergunta sobre Cirurgia de Joelho</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+        }
+        .response {
+            margin-top: 20px;
+        }
+        #response {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Amanhã tem cirurgia de joelho?</h1>
+        <input type="text" id="resposta" placeholder="Digite 'sim' ou 'não'">
+        <button onclick="verificarResposta()">Enviar</button>
+
+        <div id="response" class="response"></div>
+    </div>
+
+    <script>
+        function verificarResposta() {
+            var resposta = document.getElementById("resposta").value.toLowerCase().trim();
+            var responseDiv = document.getElementById("response");
+
+            if (resposta === 'sim') {
+                responseDiv.innerHTML = `
+                    <iframe src="https://giphy.com/embed/j1QgAwLMrEUYCrB5EM" width="480" height="408" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+                    <p><a href="https://giphy.com/gifs/the-grinch-knee-surgery-blue-j1QgAwLMrEUYCrB5EM">via GIPHY</a></p>
+                `;
+            } else if (resposta === 'não') {
+                responseDiv.innerHTML = '<img src="isnt_knee_surgery.png" alt="Imagem de cirurgia não" width="300">';
+            } else {
+                responseDiv.innerHTML = '<p>Por favor, digite "sim" ou "não".</p>';
+            }
+        }
+    </script>
+</body>
+</html>
