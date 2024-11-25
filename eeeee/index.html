@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perguntas e Termo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        #response {
+            margin-top: 20px;
+        }
+
+        #hiddenButton {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #f0f0f0;
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        #hiddenButton.hidden {
+            display: none;
+        }
+
+        #list {
+            display: none;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .term-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .term-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .term-cell {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #ccc;
+            margin: 2px;
+            text-align: center;
+            font-size: 20px;
+            line-height: 50px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .term-cell.green {
+            background-color: #6aaa64;
+            color: white;
+            border-color: #6aaa64;
+        }
+
+        .term-cell.yellow {
+            background-color: #c9b458;
+            color: white;
+            border-color: #c9b458;
+        }
+
+        .term-cell.gray {
+            background-color: #787c7e;
+            color: white;
+            border-color: #787c7e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Amanhã tem cirurgia de joelho?</h1>
+        <input type="text" id="resposta" placeholder="Digite sua resposta">
+        <button onclick="verificarResposta()">Enviar</button>
+
+        <div id="response"></div>
+
+        <!-- Lista desbloqueada -->
+        <div id="list">
+            <h3>Respostas:</h3>
+            <ul>
+                <li>mike tyson</li>
+                <li>encontro</li>
+            </ul>
+        </div>
+
+        <!-- Botão oculto -->
+        <button id="hiddenButton" class="hidden" onclick="abrirTermo()"></button>
+
+        <!-- Popup do Termo -->
+        <div class="term-popup" id="popup">
+            <h2>Jogo Termo</h2>
+            <div id="termGame"></div>
+            <p id="message" style="color: red; display: none;">Preencha todos os quadrados!</p>
+        </div>
+    </div>
+
+    <script>
+        const palavrasTermo = ["verde", "certo", "linha", "campo", "fases"];
+        let palavraCorreta = palavrasTermo[Math.floor(Math.random() * palavrasTermo.length)];
+        let linhaAtual = 0;
+        let colunaAtual = 0;
+        let senha1 = "enigma do cellbit";
+        let senhaFinal = "cirurgia de joelho";
+        let tentativasSenha1 = 0;
+
+        function verificarResposta() {
+            const resposta = document.getElementById("resposta").value.toLowerCase().trim();
+            const responseDiv = document.getElementById("response");
+
+            if (resposta === senha1) {
+                // Mostra o botão escondido
+                mostrarBotaoEscondido();
+            } else if (resposta === senhaFinal && tentativasSenha1 === 1) {
+                // Mostra a lista desbloqueada
+                document.getElementById("list").style.display = "block";
+                responseDiv.innerHTML = "<p>Lista desbloqueada!</p>";
+            } else if (resposta === "mike tyson") {
+                responseDiv.innerHTML = '<video width="320" height="240" controls><source src="mikeTyson.mp4" type="video/mp4">Seu navegador não suporta o vídeo.</video>';
+            } else if (resposta === "encontro") {
+                responseDiv.innerHTML = '<video width="320" height="240" controls><source src="encontro.mp4" type="video/mp4">Seu navegador não suporta o vídeo.</video>';
+            } else {
+                responseDiv.innerHTML = "<p>Resposta inválida!</p>";
+            }
+        }
+
+        function mostrarBotaoEscondido() {
+            tentativasSenha1++;
+            const hiddenButton = document.getElementById("hiddenButton");
+            const x = Math.random() * (window.innerWidth - 50);
+            const y = Math.random() * (window.innerHeight - 50);
+
+            hiddenButton.style.top = `${y}px`;
+            hiddenButton.style.left = `${x}px`;
+            hiddenButton.classList.remove("hidden");
+        }
+
+        function abrirTermo() {
+            document.getElementById("popup").style.display = "block";
+            criarJogoTermo();
+        }
+
+        function criarJogoTermo() {
+            const termGame = document.getElementById("termGame");
+            termGame.innerHTML = "";
+
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement("div");
+                row.classList.add("term-row");
+
+                for (let j = 0; j < 5; j++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("term-cell");
+                    cell.setAttribute("data-row", i);
+                    cell.setAttribute("data-col", j);
+                    row.appendChild(cell);
+                }
+
+                termGame.appendChild(row);
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (linhaAtual > 5) return;
+
+            const rows = document.querySelectorAll(".term-row");
+            const currentRow = rows[linhaAtual];
+            const cells = currentRow.querySelectorAll(".term-cell");
+
+            if (event.key.match(/^[a-zA-Z]$/) && colunaAtual < 5) {
+                cells[colunaAtual].textContent = event.key.toUpperCase();
+                colunaAtual++;
+            } else if (event.key === "Backspace" && colunaAtual > 0) {
+                colunaAtual--;
+                cells[colunaAtual].textContent = "";
+            } else if (event.key === "Enter" && colunaAtual === 5) {
+                const palavraDigitada = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join("");
+                verificarPalavra(palavraDigitada, cells);
+            }
+        }
+
+        function verificarPalavra(palavra, cells) {
+            if (palavra.length !== 5) return;
+
+            let allCorrect = true;
+
+            for (let i = 0; i < 5; i++) {
+                if (palavra[i] === palavraCorreta[i]) {
+                    cells[i].classList.add("green");
+                } else if (palavraCorreta.includes(palavra[i])) {
+                    cells[i].classList.add("yellow");
+                    allCorrect = false;
+                } else {
+                    cells[i].classList.add("gray");
+                    allCorrect = false;
+                }
+            }
+
+            if (allCorrect) {
+                alert("Parabéns! Você acertou o Termo!");
+                document.getElementById("popup").style.display = "none";
+            } else {
+                linhaAtual++;
+                colunaAtual = 0;
+
+                if (linhaAtual > 5) {
+                    alert(`Você perdeu! A palavra correta era: ${palavraCorreta}`);
+                    location.reload();
+                }
+            }
+        }
+
+        document.addEventListener("keydown", handleKeyPress);
+    </script>
+</body>
+</html>
